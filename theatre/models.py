@@ -7,6 +7,10 @@ class Actor(models.Model):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
 
+    @property
+    def full_name(self):
+        return f"{self.first_name} {self.last_name}"
+
     def __str__(self):
         return self.first_name + " " + self.last_name
 
@@ -74,43 +78,43 @@ class Ticket(models.Model):
     def __str__(self):
         return f"Row {self.row}, Seat {self.seat} for {self.performance}"
 
-    @staticmethod
-    def validate_ticket_position(
-        row: int,
-        seat: int,
-        theatre_hall: TheatreHall
-    ) -> None:
-        max_rows = theatre_hall.rows
-        if not (1 <= row <= max_rows):
-            raise ValidationError(
-                {
-                    "row":
-                        f"Row number must be in available range: "
-                        f"(1, {max_rows})"
-                }
-            )
-
-        max_seats_in_row = theatre_hall.seats_in_row
-        if not (1 <= seat <= max_seats_in_row):
-            raise ValidationError(
-                {
-                    "seat":
-                        f"Seat number must be in available range: "
-                        f"(1, {max_seats_in_row})"
-                }
-            )
-
-    def clean(self):
-        self.validate_ticket_position(
-            self.row, self.seat, self.performance.theatre_hall
-        )
-
-    def save(self, *args, force_insert=False, force_update=False, using=None, update_fields=None):
-        self.full_clean()
-        super(Ticket, self).save(
-            *args,
-            force_insert=force_insert,
-            force_update=force_update,
-            using=using,
-            update_fields=update_fields
-        )
+    # @staticmethod
+    # def validate_ticket_position(
+    #     row: int,
+    #     seat: int,
+    #     theatre_hall: TheatreHall
+    # ) -> None:
+    #     max_rows = theatre_hall.rows
+    #     if not (1 <= row <= max_rows):
+    #         raise ValidationError(
+    #             {
+    #                 "row":
+    #                     f"Row number must be in available range: "
+    #                     f"(1, {max_rows})"
+    #             }
+    #         )
+    #
+    #     max_seats_in_row = theatre_hall.seats_in_row
+    #     if not (1 <= seat <= max_seats_in_row):
+    #         raise ValidationError(
+    #             {
+    #                 "seat":
+    #                     f"Seat number must be in available range: "
+    #                     f"(1, {max_seats_in_row})"
+    #             }
+    #         )
+    #
+    # def clean(self):
+    #     self.validate_ticket_position(
+    #         self.row, self.seat, self.performance.theatre_hall
+    #     )
+    #
+    # def save(self, *args, force_insert=False, force_update=False, using=None, update_fields=None):
+    #     self.full_clean()
+    #     super(Ticket, self).save(
+    #         *args,
+    #         force_insert=force_insert,
+    #         force_update=force_update,
+    #         using=using,
+    #         update_fields=update_fields
+    #     )
