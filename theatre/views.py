@@ -1,10 +1,11 @@
+from django.db.models import F, Count
 from django_filters.rest_framework.backends import DjangoFilterBackend
 from rest_framework import viewsets
 from rest_framework.permissions import IsAdminUser
 
 from theatre.filters import PlayFilter
 from theatre.models import Actor, Genre, Play, TheatreHall, Performance
-from theatre.permissions import IsAdminOrIfAuthenticatedReadOnly
+from theatre.permissions import IsAdminOrIfAuthenticatedReadOnly, IsAdminOrIfAnonReadOnly
 from theatre.serializers import ActorSerializer, GenreSerializer, PlaySerializer, TheatreHallSerializer, \
     PerformanceSerializer
 from django.utils.timezone import now
@@ -48,4 +49,17 @@ class PlayViewSet(viewsets.ModelViewSet):
 
         return queryset
 
+class PerformanceViewSet(viewsets.ModelViewSet):
+    serializer_class = PerformanceSerializer
+    permission_classes = (IsAdminOrIfAnonReadOnly,)
+    queryset = (
+        Performance.objects.all()
+        .select_related("play", "theatre_hall")
+        .annotate(
+            tickets_available=(
+                F("theatre_hall__rows") * F("theatre_hall__seats_in_row")
+                - Count("tickets")
+            )
+        )
+    )
 
