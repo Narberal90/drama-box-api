@@ -3,11 +3,16 @@ from django_filters.rest_framework.backends import DjangoFilterBackend
 from rest_framework import viewsets
 from rest_framework.permissions import IsAdminUser
 
-from theatre.filters import PlayFilter
+from theatre.filters import PlayFilter, PerformanceFilter
 from theatre.models import Actor, Genre, Play, TheatreHall, Performance
 from theatre.permissions import IsAdminOrIfAuthenticatedReadOnly, IsAdminOrIfAnonReadOnly
-from theatre.serializers import ActorSerializer, GenreSerializer, PlaySerializer, TheatreHallSerializer, \
-    PerformanceSerializer
+from theatre.serializers import (
+    ActorSerializer,
+    GenreSerializer,
+    PlaySerializer,
+    TheatreHallSerializer,
+    PerformanceSerializer, PerformanceListSerializer, PerformanceDetailSerializer
+)
 from django.utils.timezone import now
 
 
@@ -49,17 +54,24 @@ class PlayViewSet(viewsets.ModelViewSet):
 
         return queryset
 
+
 class PerformanceViewSet(viewsets.ModelViewSet):
     serializer_class = PerformanceSerializer
     permission_classes = (IsAdminOrIfAnonReadOnly,)
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = PerformanceFilter
     queryset = (
         Performance.objects.all()
         .select_related("play", "theatre_hall")
         .annotate(
-            tickets_available=(
+            tickets_avimpailable=(
                 F("theatre_hall__rows") * F("theatre_hall__seats_in_row")
                 - Count("tickets")
             )
         )
     )
-
+    def get_serializer_class(self):
+        if self.action == "list":
+            return PerformanceListSerializer
+        if self.action == "retrieve":
+            return PerformanceDetailSerializer
