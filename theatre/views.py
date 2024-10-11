@@ -1,5 +1,7 @@
+from django_filters.rest_framework.backends import DjangoFilterBackend
 from rest_framework import viewsets
 
+from theatre.filters import PlayFilter
 from theatre.models import Actor, Genre, Play
 from theatre.serializers import ActorSerializer, GenreSerializer, PlaySerializer
 
@@ -17,3 +19,5 @@ class GenreViewSet(viewsets.ModelViewSet):
 class PlayViewSet(viewsets.ModelViewSet):
     queryset = Play.objects.prefetch_related("genres", "actors")
     serializer_class = PlaySerializer
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = PlayFilter
