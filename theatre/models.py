@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.core.exceptions import ValidationError
 
 
 class Actor(models.Model):
@@ -53,6 +54,9 @@ class Reservation(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="reservations")
 
+    class Meta:
+        ordering = ["-created_at"]
+
     def __str__(self):
         return f"Reservation made on {self.created_at.strftime('%Y-%m-%d %H:%M:%S')}"
 
@@ -63,5 +67,50 @@ class Ticket(models.Model):
     performance = models.ForeignKey(Performance, on_delete=models.CASCADE, related_name="tickets")
     reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE, related_name="tickets")
 
+    class Meta:
+        unique_together = ("performance", "row", "seat")
+        ordering = ("seat",)
+
     def __str__(self):
         return f"Row {self.row}, Seat {self.seat} for {self.performance}"
+
+    @staticmethod
+    def validate_ticket_position(
+        row: int,
+        seat: int,
+        theatre_hall: TheatreHall
+    ) -> None:
+        max_rows = theatre_hall.rows
+        if not (1 <= row <= max_rows):
+            raise ValidationError(
+                {
+                    "row":
+                        f"Row number must be in available range: "
+                        f"(1, {max_rows})"
+                }
+            )
+
+        max_seats_in_row = theatre_hall.seats_in_row
+        if not (1 <= seat <= max_seats_in_row):
+            raise ValidationError(
+                {
+                    "seat":
+                        f"Seat number must be in available range: "
+                        f"(1, {max_seats_in_row})"
+                }
+            )
+
+    def clean(self):
+        self.validate_ticket_position(
+            self.row, self.seat, self.performance.theatre_hall
+        )
+
+    def save(self, *args, force_insert=False, force_update=False, using=None, update_fields=None):
+        self.full_clean()
+        super(Ticket, self).save(
+            *args,
+            force_insert=force_insert,
+            force_update=force_update,
+            using=using,
+            update_fields=update_fields
+        )
