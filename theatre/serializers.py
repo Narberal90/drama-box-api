@@ -32,6 +32,7 @@ class PlaySerializer(serializers.ModelSerializer):
             "image"
         )
 
+
 class PlayImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Play
@@ -125,7 +126,7 @@ class PerformanceCreateUpdateSerializer(serializers.ModelSerializer):
 
 
 class ReservationSerializer(serializers.ModelSerializer):
-    tickets = TicketSerializer(many=True, read_only=True, allow_empty=False)
+    tickets = TicketSerializer(many=True, allow_empty=False)
 
     class Meta:
         model = Reservation

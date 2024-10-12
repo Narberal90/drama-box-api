@@ -123,6 +123,7 @@ class PerformanceViewSet(viewsets.ModelViewSet):
 class ReservationViewSet(
     mixins.ListModelMixin,
     mixins.CreateModelMixin,
+    mixins.RetrieveModelMixin,
     GenericViewSet,
 ):
     queryset = Reservation.objects.prefetch_related(
@@ -136,6 +137,8 @@ class ReservationViewSet(
 
     def get_serializer_class(self):
         if self.action == "list":
+            return ReservationListSerializer
+        if self.action == "retrieve":
             return ReservationListSerializer
 
         return ReservationSerializer
