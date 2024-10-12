@@ -83,6 +83,9 @@ class PerformanceViewSet(viewsets.ModelViewSet):
             return PerformanceListSerializer
         if self.action == "retrieve":
             return PerformanceDetailSerializer
+        if self.action in ["create", "update", "partial_update"]:
+            return PerformanceCreateUpdateSerializer
+        return super().get_serializer_class()
 
     def get_ordering(self):
         fields = ["show_time", "play__title", "theatre_hall__name", "tickets_available"]
