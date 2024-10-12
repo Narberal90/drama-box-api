@@ -5,6 +5,7 @@ from rest_framework.permissions import IsAdminUser
 
 from theatre.filters import PlayFilter, PerformanceFilter
 from theatre.models import Actor, Genre, Play, TheatreHall, Performance
+from theatre.ordering import PerformanceOrdering
 from theatre.permissions import IsAdminOrIfAuthenticatedReadOnly, IsAdminOrIfAnonReadOnly
 from theatre.serializers import (
     ActorSerializer,
@@ -75,3 +76,12 @@ class PerformanceViewSet(viewsets.ModelViewSet):
             return PerformanceListSerializer
         if self.action == "retrieve":
             return PerformanceDetailSerializer
+
+    def get_ordering(self):
+        fields = ["show_time", "play__title", "theatre_hall__name", "tickets_available"]
+        return PerformanceOrdering.get_ordering_fields(self.request, fields)
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        ordering = self.get_ordering()
+        return queryset.order_by(*ordering)
