@@ -89,8 +89,12 @@ class TicketSeatsSerializer(TicketSerializer):
         fields = ("row", "seat")
 
 
+class TicketListSerializer(TicketSerializer):
+    performance = PerformanceListSerializer(many=False, read_only=True)
+
+
 class PerformanceDetailSerializer(PerformanceSerializer):
-    play = PlaySerializer(many=False, read_only=True)
+    play = PlayRetrieveSerializer(many=False, read_only=True)
     theatre_hall = TheatreHallSerializer(many=False, read_only=True)
     taken_places = TicketSeatsSerializer(
         source="tickets", many=True, read_only=True
@@ -99,3 +103,33 @@ class PerformanceDetailSerializer(PerformanceSerializer):
     class Meta:
         model = Performance
         fields = ("id", "show_time", "play", "theatre_hall", "taken_places")
+
+
+class PerformanceCreateUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Performance
+        fields = (
+            "play",
+            "theatre_hall",
+            "show_time",
+        )
+
+
+class ReservationSerializer(serializers.ModelSerializer):
+    tickets = TicketSerializer(many=True, read_only=True, allow_empty=False)
+
+    class Meta:
+        model = Reservation
+        fields = ("id", "tickets", "created_at")
+
+    def create(self, validated_data):
+        with transaction.atomic():
+            tickets_data = validated_data.pop("tickets")
+            reservation = Reservation.objects.create(**validated_data)
+            for ticket_data in tickets_data:
+                Ticket.objects.create(reservation=reservation, **ticket_data)
+            return reservation
+
+
+class ReservationListSerializer(ReservationSerializer):
+    tickets = TicketListSerializer(many=True, read_only=True)
