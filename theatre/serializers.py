@@ -32,6 +32,11 @@ class PlaySerializer(serializers.ModelSerializer):
         )
 
 
+class PlayRetrieveSerializer(PlaySerializer):
+    actors = ActorSerializer(many=True, read_only=True)
+    genres = GenreSerializer(many=True, read_only=True)
+
+
 class TheatreHallSerializer(serializers.ModelSerializer):
     class Meta:
         model = TheatreHall
