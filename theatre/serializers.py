@@ -1,7 +1,8 @@
+from django.db import transaction
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from theatre.models import Actor, Genre, Play, TheatreHall, Performance, Ticket
+from theatre.models import Actor, Genre, Play, TheatreHall, Performance, Ticket, Reservation
 
 
 class ActorSerializer(serializers.ModelSerializer):
@@ -63,8 +64,8 @@ class PerformanceListSerializer(PerformanceSerializer):
         model = Performance
         fields = (
             "id",
-            "show_time",
             "play_title",
+            "show_time",
             "theatre_hall_name",
             "theatre_hall_capacity",
             "tickets_available",
@@ -74,7 +75,7 @@ class PerformanceListSerializer(PerformanceSerializer):
 class TicketSerializer(serializers.ModelSerializer):
     def validate(self, data: dict) -> dict:
         Ticket.validate_ticket_position(
-            data["row"], data["seat"], data["movie_session"].cinema_hall
+            data["row"], data["seat"], data["performance"].theatre_hall
         )
         return data
 

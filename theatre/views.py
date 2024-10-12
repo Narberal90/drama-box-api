@@ -1,10 +1,11 @@
 from django.db.models import F, Count
 from django_filters.rest_framework.backends import DjangoFilterBackend
-from rest_framework import viewsets
-from rest_framework.permissions import IsAdminUser
+from rest_framework import viewsets, mixins
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
+from rest_framework.viewsets import GenericViewSet
 
 from theatre.filters import PlayFilter, PerformanceFilter
-from theatre.models import Actor, Genre, Play, TheatreHall, Performance
+from theatre.models import Actor, Genre, Play, TheatreHall, Performance, Reservation
 from theatre.ordering import PerformanceOrdering
 from theatre.permissions import IsAdminOrIfAuthenticatedReadOnly, IsAdminOrIfAnonReadOnly
 from theatre.serializers import (
@@ -12,7 +13,8 @@ from theatre.serializers import (
     GenreSerializer,
     PlaySerializer,
     TheatreHallSerializer,
-    PerformanceSerializer, PerformanceListSerializer, PerformanceDetailSerializer
+    PerformanceSerializer, PerformanceListSerializer, PerformanceDetailSerializer, ReservationSerializer,
+    ReservationListSerializer, PerformanceCreateUpdateSerializer, PlayRetrieveSerializer
 )
 from django.utils.timezone import now
 
@@ -54,6 +56,11 @@ class PlayViewSet(viewsets.ModelViewSet):
                 ).distinct()
 
         return queryset
+
+    def get_serializer_class(self):
+        if self.action == "retrieve":
+            return PlayRetrieveSerializer
+        return self.serializer_class
 
 
 class PerformanceViewSet(viewsets.ModelViewSet):
