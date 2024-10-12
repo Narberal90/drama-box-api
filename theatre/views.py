@@ -1,7 +1,9 @@
 from django.db.models import F, Count
 from django_filters.rest_framework.backends import DjangoFilterBackend
-from rest_framework import viewsets, mixins
+from rest_framework import viewsets, mixins, status
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
+from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from theatre.filters import PlayFilter, PerformanceFilter
@@ -14,7 +16,7 @@ from theatre.serializers import (
     PlaySerializer,
     TheatreHallSerializer,
     PerformanceSerializer, PerformanceListSerializer, PerformanceDetailSerializer, ReservationSerializer,
-    ReservationListSerializer, PerformanceCreateUpdateSerializer, PlayRetrieveSerializer
+    ReservationListSerializer, PerformanceCreateUpdateSerializer, PlayRetrieveSerializer, PlayImageSerializer
 )
 from django.utils.timezone import now
 
@@ -60,7 +62,27 @@ class PlayViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action == "retrieve":
             return PlayRetrieveSerializer
+        if self.action == "upload-image":
+            return PlayImageSerializer
+
         return self.serializer_class
+
+    @action(
+        methods=["POST", "PUT", "PATCH"],
+        detail=True,
+        url_path="upload-image",
+        permission_classes=[IsAdminUser],
+    )
+    def upload_image(self, request, pk=None):
+        """Endpoint for uploading or updating image for a specific play."""
+        play = self.get_object()
+        serializer = self.get_serializer(play, data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class PerformanceViewSet(viewsets.ModelViewSet):
@@ -78,6 +100,7 @@ class PerformanceViewSet(viewsets.ModelViewSet):
             )
         )
     )
+
     def get_serializer_class(self):
         if self.action == "list":
             return PerformanceListSerializer
@@ -95,6 +118,7 @@ class PerformanceViewSet(viewsets.ModelViewSet):
         queryset = super().get_queryset()
         ordering = self.get_ordering()
         return queryset.order_by(*ordering)
+
 
 class ReservationViewSet(
     mixins.ListModelMixin,
