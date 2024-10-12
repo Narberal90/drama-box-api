@@ -95,3 +95,26 @@ class PerformanceViewSet(viewsets.ModelViewSet):
         queryset = super().get_queryset()
         ordering = self.get_ordering()
         return queryset.order_by(*ordering)
+
+class ReservationViewSet(
+    mixins.ListModelMixin,
+    mixins.CreateModelMixin,
+    GenericViewSet,
+):
+    queryset = Reservation.objects.prefetch_related(
+        "tickets__performance__play", "tickets__performance__theatre_hall"
+    )
+    serializer_class = ReservationSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        return Reservation.objects.filter(user=self.request.user)
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return ReservationListSerializer
+
+        return ReservationSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
