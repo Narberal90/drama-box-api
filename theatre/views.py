@@ -1,4 +1,5 @@
 from django.db.models import F, Count
+from django.utils.timezone import now
 from django_filters.rest_framework.backends import DjangoFilterBackend
 from rest_framework import viewsets, mixins, status
 from rest_framework.decorators import action
@@ -32,15 +33,16 @@ from theatre.serializers import (
     PlayRetrieveSerializer,
     PlayImageSerializer
 )
-from django.utils.timezone import now
 
 
 class ActorViewSet(viewsets.ModelViewSet):
+    permission_classes = (IsAdminUser,)
     serializer_class = ActorSerializer
     queryset = Actor.objects.all()
 
 
 class GenreViewSet(viewsets.ModelViewSet):
+    permission_classes = (IsAdminUser,)
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
 
@@ -54,7 +56,8 @@ class TheatreHallViewSet(viewsets.ModelViewSet):
 class PlayViewSet(viewsets.ModelViewSet):
     queryset = Play.objects.prefetch_related("genres", "actors")
     serializer_class = PlaySerializer
-    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
+    pagination_class = TheatrePaginator
+    permission_classes = (IsAdminOrIfAnonReadOnly,)
     filter_backends = (DjangoFilterBackend,)
     filterset_class = PlayFilter
 
@@ -62,14 +65,17 @@ class PlayViewSet(viewsets.ModelViewSet):
         queryset = super().get_queryset()
 
         if not self.request.user.is_staff:
-            queryset = queryset.filter(
+            future_performances = queryset.filter(
                 performances__show_time__gte=now()
             ).distinct()
 
             if self.request.user.is_authenticated:
-                queryset = queryset | Play.objects.filter(
+                user_reservations = Play.objects.filter(
                     performances__tickets__reservation__user=self.request.user
                 ).distinct()
+                queryset = future_performances | user_reservations
+            else:
+                queryset = future_performances
 
         return queryset
 
@@ -132,6 +138,10 @@ class PerformanceViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = super().get_queryset()
         ordering = self.get_ordering()
+
+        if not self.request.user.is_staff:
+            queryset = queryset.filter(show_time__gte=now())
+
         return queryset.order_by(*ordering)
 
 
