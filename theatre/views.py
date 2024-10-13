@@ -7,16 +7,30 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from theatre.filters import PlayFilter, PerformanceFilter
-from theatre.models import Actor, Genre, Play, TheatreHall, Performance, Reservation
+from theatre.models import (
+    Actor,
+    Genre,
+    Play,
+    TheatreHall,
+    Performance,
+    Reservation
+)
 from theatre.ordering import PerformanceOrdering
-from theatre.permissions import IsAdminOrIfAuthenticatedReadOnly, IsAdminOrIfAnonReadOnly
+from theatre.paginators import TheatrePaginator
+from theatre.permissions import IsAdminOrIfAnonReadOnly
 from theatre.serializers import (
     ActorSerializer,
     GenreSerializer,
     PlaySerializer,
     TheatreHallSerializer,
-    PerformanceSerializer, PerformanceListSerializer, PerformanceDetailSerializer, ReservationSerializer,
-    ReservationListSerializer, PerformanceCreateUpdateSerializer, PlayRetrieveSerializer, PlayImageSerializer
+    PerformanceSerializer,
+    PerformanceListSerializer,
+    PerformanceDetailSerializer,
+    ReservationSerializer,
+    ReservationListSerializer,
+    PerformanceCreateUpdateSerializer,
+    PlayRetrieveSerializer,
+    PlayImageSerializer
 )
 from django.utils.timezone import now
 
