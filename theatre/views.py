@@ -16,9 +16,10 @@ from theatre.models import (
     Performance,
     Reservation
 )
-from theatre.ordering import PerformanceOrdering
+from theatre.ordering import PerformancePlayOrdering
 from theatre.paginators import TheatrePaginator
 from theatre.permissions import IsAdminOrIfAnonReadOnly
+from theatre.schemas.examples import play_create_example_scheme
 from theatre.serializers import (
     ActorSerializer,
     GenreSerializer,
@@ -53,6 +54,23 @@ class TheatreHallViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAdminUser,)
 
 
+from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiExample
+
+
+@extend_schema_view(
+    create=extend_schema(
+        request=PlaySerializer,
+        responses={201: PlaySerializer},
+        examples=[
+            OpenApiExample(
+                "Play Creation Example",
+                value=play_create_example_scheme,
+                request_only=True,
+                response_only=False,
+            ),
+        ],
+    )
+)
 class PlayViewSet(viewsets.ModelViewSet):
     queryset = Play.objects.prefetch_related("genres", "actors")
     serializer_class = PlaySerializer
@@ -77,7 +95,8 @@ class PlayViewSet(viewsets.ModelViewSet):
             else:
                 queryset = future_performances
 
-        return queryset
+        ordering = PerformancePlayOrdering.get_ordering_fields(self.request, ["title"])
+        return queryset.order_by(*ordering)
 
     def get_serializer_class(self):
         if self.action == "retrieve":
@@ -133,7 +152,7 @@ class PerformanceViewSet(viewsets.ModelViewSet):
 
     def get_ordering(self):
         fields = ["show_time", "play__title", "theatre_hall__name", "tickets_available"]
-        return PerformanceOrdering.get_ordering_fields(self.request, fields)
+        return PerformancePlayOrdering.get_ordering_fields(self.request, fields)
 
     def get_queryset(self):
         queryset = super().get_queryset()

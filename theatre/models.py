@@ -13,17 +13,17 @@ class Actor(models.Model):
     last_name = models.CharField(max_length=255)
 
     @property
-    def full_name(self):
+    def full_name(self) -> str:
         return f"{self.first_name} {self.last_name}"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.first_name + " " + self.last_name
 
 
 class Genre(models.Model):
     name = models.CharField(max_length=255, unique=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
 
@@ -41,7 +41,6 @@ class Play(models.Model):
     actors = models.ManyToManyField(Actor, related_name="plays")
     genres = models.ManyToManyField(Genre, related_name="plays")
     image = models.ImageField(null=True, upload_to=play_image_file_path)
-
 
     def __str__(self):
         return self.title
