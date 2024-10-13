@@ -87,6 +87,7 @@ class PlayViewSet(viewsets.ModelViewSet):
 
 class PerformanceViewSet(viewsets.ModelViewSet):
     serializer_class = PerformanceSerializer
+    pagination_class = TheatrePaginator
     permission_classes = (IsAdminOrIfAnonReadOnly,)
     filter_backends = (DjangoFilterBackend,)
     filterset_class = PerformanceFilter
@@ -131,6 +132,7 @@ class ReservationViewSet(
     )
     serializer_class = ReservationSerializer
     permission_classes = (IsAuthenticated,)
+    pagination_class = TheatrePaginator
 
     def get_queryset(self):
         return Reservation.objects.filter(user=self.request.user)
