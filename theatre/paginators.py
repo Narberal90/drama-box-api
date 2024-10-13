@@ -3,7 +3,7 @@ from rest_framework.response import Response
 
 
 class TheatrePaginator(PageNumberPagination):
-    page_size = 1
+    page_size = 4
     page_size_query_param = "per_page"
     max_page_size = 10
 
