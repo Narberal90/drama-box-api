@@ -1,8 +1,8 @@
 from rest_framework.request import Request
 
-class PerformanceOrdering:
+class PerformancePlayOrdering:
     ordering_param = "ordering"
-    default_param = "-show_time"
+    default_param = "id"
 
     @classmethod
     def get_ordering_fields(cls, request: Request, fields: list[str]) -> list[str]:
