@@ -1,6 +1,6 @@
 import django_filters
 
-from .models import Play, Performance
+from .models import Play, Performance, Genre, Actor
 
 
 class MultipleValuesCapitalizeFilter(
@@ -17,7 +17,8 @@ class PlayFilter(django_filters.FilterSet):
     title = django_filters.CharFilter(lookup_expr="icontains")
     duration_min = django_filters.NumberFilter(field_name="duration", lookup_expr="gte")
     duration_max = django_filters.NumberFilter(field_name="duration", lookup_expr="lte")
-
+    genres = django_filters.ModelMultipleChoiceFilter(queryset=Genre.objects.all())
+    actors = django_filters.ModelMultipleChoiceFilter(queryset=Actor.objects.all())
     class Meta:
         model = Play
         fields = ["title", "genres", "actors", "duration_min", "duration_max"]
