@@ -11,6 +11,7 @@ jsonschema==4.23.0
 jsonschema-specifications==2024.10.1
 pillow==10.4.0
 PyJWT==2.9.0
+python-dotenv==1.0.1
 PyYAML==6.0.2
 referencing==0.35.1
 rpds-py==0.20.0
