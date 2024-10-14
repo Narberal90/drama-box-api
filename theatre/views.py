@@ -19,7 +19,8 @@ from theatre.models import (
 from theatre.ordering import PerformancePlayOrdering
 from theatre.paginators import TheatrePaginator
 from theatre.permissions import IsAdminOrIfAnonReadOnly
-from theatre.schemas.examples import play_create_example_scheme
+from theatre.schemas.examples import play_create_example_scheme, play_create_response_example_scheme, \
+    reservation_create_response_example_scheme, reservation_create_example_scheme
 from theatre.serializers import (
     ActorSerializer,
     GenreSerializer,
@@ -54,19 +55,29 @@ class TheatreHallViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAdminUser,)
 
 
-from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiExample
+from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiExample, OpenApiResponse
 
 
 @extend_schema_view(
     create=extend_schema(
         request=PlaySerializer,
-        responses={201: PlaySerializer},
+        responses={
+            201: OpenApiResponse(
+                response=PlaySerializer,
+                examples=[
+                    OpenApiExample(
+                        "Play Creation Response Example",
+                        value=play_create_response_example_scheme,
+                        response_only=True,
+                    ),
+                ],
+            ),
+        },
         examples=[
             OpenApiExample(
                 "Play Creation Example",
                 value=play_create_example_scheme,
                 request_only=True,
-                response_only=False,
             ),
         ],
     )
@@ -163,7 +174,36 @@ class PerformanceViewSet(viewsets.ModelViewSet):
 
         return queryset.order_by(*ordering)
 
-
+@extend_schema_view(
+    create=extend_schema(
+        request=ReservationSerializer,
+        responses={
+            201: OpenApiResponse(
+                response=ReservationSerializer,
+                examples=[
+                    OpenApiExample(
+                        "Reservation Creation Response Example",
+                        value=reservation_create_response_example_scheme,
+                        response_only=True,
+                    ),
+                ],
+            ),
+        },
+        examples=[
+            OpenApiExample(
+                "Reservation Creation Example",
+                value=reservation_create_example_scheme,
+                request_only=True,
+            ),
+        ],
+    ),
+    list=extend_schema(
+        responses=ReservationListSerializer
+    ),
+    retrieve=extend_schema(
+        responses=ReservationListSerializer
+    )
+)
 class ReservationViewSet(
     mixins.ListModelMixin,
     mixins.CreateModelMixin,
