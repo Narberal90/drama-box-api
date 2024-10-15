@@ -153,3 +153,6 @@ Contributions are welcome! Please create an issue or submit a pull request for a
 ## License
 
 This project is licensed under the MIT License.
+
+
+![Logo](doc_example.png)
