@@ -1,0 +1,204 @@
+[
+  {
+    "model": "theatre.actor",
+    "pk": 1,
+    "fields": {
+      "first_name": "Leonardo",
+      "last_name": "DiCaprio"
+    }
+  },
+  {
+    "model": "theatre.actor",
+    "pk": 2,
+    "fields": {
+      "first_name": "Meryl",
+      "last_name": "Streep"
+    }
+  },
+  {
+    "model": "theatre.actor",
+    "pk": 3,
+    "fields": {
+      "first_name": "Denzel",
+      "last_name": "Washington"
+    }
+  },
+  {
+    "model": "theatre.actor",
+    "pk": 4,
+    "fields": {
+      "first_name": "Natalie",
+      "last_name": "Portman"
+    }
+  },
+  {
+    "model": "theatre.actor",
+    "pk": 5,
+    "fields": {
+      "first_name": "Tom",
+      "last_name": "Hanks"
+    }
+  },
+  {
+    "model": "theatre.genre",
+    "pk": 1,
+    "fields": {
+      "name": "Drama"
+    }
+  },
+  {
+    "model": "theatre.genre",
+    "pk": 2,
+    "fields": {
+      "name": "Comedy"
+    }
+  },
+  {
+    "model": "theatre.genre",
+    "pk": 3,
+    "fields": {
+      "name": "Thriller"
+    }
+  },
+  {
+    "model": "theatre.genre",
+    "pk": 4,
+    "fields": {
+      "name": "Musical"
+    }
+  },
+  {
+    "model": "theatre.play",
+    "pk": 1,
+    "fields": {
+      "title": "The Great Gatsby",
+      "description": "A story about the mysterious millionaire Jay Gatsby.",
+      "duration": 120
+    }
+  },
+  {
+    "model": "theatre.play",
+    "pk": 2,
+    "fields": {
+      "title": "Hamlet",
+      "description": "The tragedy of Hamlet, Prince of Denmark.",
+      "duration": 150
+    }
+  },
+  {
+    "model": "theatre.play",
+    "pk": 3,
+    "fields": {
+      "title": "The Lion King",
+      "description": "A musical based on the Disney animated film.",
+      "duration": 130
+    }
+  },
+  {
+    "model": "theatre.play",
+    "pk": 4,
+    "fields": {
+      "title": "Inception",
+      "description": "A mind-bending thriller about dreams within dreams.",
+      "duration": 148
+    }
+  },
+  {
+    "model": "theatre.play",
+    "pk": 5,
+    "fields": {
+      "title": "Les Misérables",
+      "description": "A musical based on Victor Hugo's novel.",
+      "duration": 155
+    }
+  },
+  {
+    "model": "theatre.theatrehall",
+    "pk": 1,
+    "fields": {
+      "name": "Main Theatre Hall",
+      "rows": 10,
+      "seats_in_row": 20
+    }
+  },
+  {
+    "model": "theatre.theatrehall",
+    "pk": 2,
+    "fields": {
+      "name": "Small Theatre Hall",
+      "rows": 5,
+      "seats_in_row": 10
+    }
+  },
+  {
+    "model": "theatre.theatrehall",
+    "pk": 3,
+    "fields": {
+      "name": "Black Box Theatre",
+      "rows": 3,
+      "seats_in_row": 15
+    }
+  },
+  {
+    "model": "theatre.performance",
+    "pk": 1,
+    "fields": {
+      "play": 1,
+      "theatre_hall": 1,
+      "show_time": "2024-10-15T19:00:00Z"
+    }
+  },
+  {
+    "model": "theatre.performance",
+    "pk": 2,
+    "fields": {
+      "play": 2,
+      "theatre_hall": 1,
+      "show_time": "2024-10-16T19:00:00Z"
+    }
+  },
+  {
+    "model": "theatre.performance",
+    "pk": 3,
+    "fields": {
+      "play": 3,
+      "theatre_hall": 2,
+      "show_time": "2024-10-17T19:00:00Z"
+    }
+  },
+  {
+    "model": "theatre.performance",
+    "pk": 4,
+    "fields": {
+      "play": 4,
+      "theatre_hall": 2,
+      "show_time": "2024-10-18T20:00:00Z"
+    }
+  },
+  {
+    "model": "theatre.performance",
+    "pk": 5,
+    "fields": {
+      "play": 5,
+      "theatre_hall": 3,
+      "show_time": "2024-10-19T19:00:00Z"
+    }
+  },
+  {
+    "model": "user.user",
+    "pk": 1,
+    "fields": {
+      "password": "pbkdf2_sha256$870000$7raaBuotcLnTnM7dvzJTll$A8/HbNCE0mdz9LkQsRX1s6aFDiJmAgfDRsrk82jZ+sA=",
+      "last_login": null,
+      "is_superuser": true,
+      "first_name": "",
+      "last_name": "",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2024-10-15T13:44:14.270Z",
+      "email": "admin@admin.com",
+      "groups": [],
+      "user_permissions": []
+    }
+  }
+]
