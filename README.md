@@ -12,9 +12,10 @@ This project is a Theatre Management API built with Django, Docker, and PostgreS
 6. [Database Initialization](#database-initialization)
 7. [Accessing the API](#accessing-the-api)
 8. [API Endpoints](#api-endpoints)
-9. [Stopping the Application](#stopping-the-application)
-10. [Contributing](#contributing)
-11. [License](#license)
+9. [API Documentation](#api-documentation)
+10. [Stopping the Application](#stopping-the-application)
+11. [Contributing](#contributing)
+12. [License](#license)
 
 ## Features
 
@@ -129,6 +130,13 @@ The API will be accessible at `http://localhost:8000/api/`.
 - `/api/user/token/refresh/` - Refresh your authentication token
 - `/api/user/token/verify/` - Verify your authentication token
 - `/api/user/me/` - Manage your user profile
+
+### API Documentation
+
+You can access the API documentation at:
+
+- [Swagger UI](http://localhost:8000/api/doc/swagger/) - Interactive API documentation.
+- [ReDoc](http://localhost:8000/api/doc/redoc/) - Alternative API documentation.
 
 ### Stopping the Application
 
