@@ -45,7 +45,7 @@ Ensure you have the following installed on your system:
 ### Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/drama-box-api.git
+git clone https://github.com/Narberal90/drama-box-api.git
 cd drama-box-api
 ```
 
