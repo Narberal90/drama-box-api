@@ -60,8 +60,12 @@ class TheatreHall(models.Model):
 
 
 class Performance(models.Model):
-    play = models.ForeignKey(Play, on_delete=models.CASCADE, related_name="performances")
-    theatre_hall = models.ForeignKey(TheatreHall, on_delete=models.CASCADE, related_name="performances")
+    play = models.ForeignKey(
+        Play, on_delete=models.CASCADE, related_name="performances"
+    )
+    theatre_hall = models.ForeignKey(
+        TheatreHall, on_delete=models.CASCADE, related_name="performances"
+    )
     show_time = models.DateTimeField()
 
     def __str__(self):
@@ -70,20 +74,29 @@ class Performance(models.Model):
 
 class Reservation(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="reservations")
+    user = models.ForeignKey(
+        get_user_model(), on_delete=models.CASCADE, related_name="reservations"
+    )
 
     class Meta:
         ordering = ["-created_at"]
 
     def __str__(self):
-        return f"Reservation made on {self.created_at.strftime('%Y-%m-%d %H:%M:%S')}"
+        return (
+            f"Reservation made on "
+            f"{self.created_at.strftime('%Y-%m-%d %H:%M:%S')}"
+        )
 
 
 class Ticket(models.Model):
     row = models.IntegerField()
     seat = models.IntegerField()
-    performance = models.ForeignKey(Performance, on_delete=models.CASCADE, related_name="tickets")
-    reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE, related_name="tickets")
+    performance = models.ForeignKey(
+        Performance, on_delete=models.CASCADE, related_name="tickets"
+    )
+    reservation = models.ForeignKey(
+        Reservation, on_delete=models.CASCADE, related_name="tickets"
+    )
 
     class Meta:
         unique_together = ("performance", "row", "seat")
@@ -94,17 +107,14 @@ class Ticket(models.Model):
 
     @staticmethod
     def validate_ticket_position(
-        row: int,
-        seat: int,
-        theatre_hall: TheatreHall
+        row: int, seat: int, theatre_hall: TheatreHall
     ) -> None:
         max_rows = theatre_hall.rows
         if not (1 <= row <= max_rows):
             raise ValidationError(
                 {
-                    "row":
-                        f"Row number must be in available range: "
-                        f"(1, {max_rows})"
+                    "row": f"Row number must be in available range: "
+                           f"(1, {max_rows})"
                 }
             )
 
@@ -112,9 +122,8 @@ class Ticket(models.Model):
         if not (1 <= seat <= max_seats_in_row):
             raise ValidationError(
                 {
-                    "seat":
-                        f"Seat number must be in available range: "
-                        f"(1, {max_seats_in_row})"
+                    "seat": f"Seat number must be in available range: "
+                            f"(1, {max_seats_in_row})"
                 }
             )
 
@@ -123,12 +132,19 @@ class Ticket(models.Model):
             self.row, self.seat, self.performance.theatre_hall
         )
 
-    def save(self, *args, force_insert=False, force_update=False, using=None, update_fields=None):
+    def save(
+        self,
+        *args,
+        force_insert=False,
+        force_update=False,
+        using=None,
+        update_fields=None,
+    ):
         self.full_clean()
         super(Ticket, self).save(
             *args,
             force_insert=force_insert,
             force_update=force_update,
             using=using,
-            update_fields=update_fields
+            update_fields=update_fields,
         )

@@ -2,7 +2,6 @@ from rest_framework.throttling import BaseThrottle
 from django.core.cache import cache
 
 
-
 class LoginFailRateThrottle(BaseThrottle):
     INCORRECT_LOGIN_TRIES = 3
     LOGIN_FAILURES_BLOCK_TIME = 300

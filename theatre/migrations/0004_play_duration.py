@@ -6,13 +6,16 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('theatre', '0003_alter_reservation_options_alter_ticket_options_and_more'),
+        (
+            "theatre",
+            "0003_alter_reservation_options_alter_ticket_options_and_more",
+        ),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='play',
-            name='duration',
+            model_name="play",
+            name="duration",
             field=models.IntegerField(default=None),
         ),
     ]

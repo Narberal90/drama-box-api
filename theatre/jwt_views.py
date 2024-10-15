@@ -12,7 +12,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
         serializer = self.get_serializer(data=request.data)
 
         ip = self._get_ip_from_request(request)
-        cache_key = f'login_fail_{ip}'
+        cache_key = f"login_fail_{ip}"
 
         try:
             serializer.is_valid(raise_exception=True)
@@ -28,9 +28,9 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 
     @staticmethod
     def _get_ip_from_request(request):
-        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
         if x_forwarded_for:
-            ip = x_forwarded_for.split(',')[0]
+            ip = x_forwarded_for.split(",")[0]
         else:
-            ip = request.META.get('REMOTE_ADDR')
+            ip = request.META.get("REMOTE_ADDR")
         return ip

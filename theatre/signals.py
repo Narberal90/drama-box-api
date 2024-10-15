@@ -3,7 +3,10 @@ from django.dispatch import receiver
 from .models import Reservation
 from .tasks import send_reservation_confirmation_email
 
+
 @receiver(post_save, sender=Reservation)
 def send_reservation_confirmation(sender, instance, created, **kwargs):
     if created:
-        send_reservation_confirmation_email.delay(instance.id, instance.user.email)
+        send_reservation_confirmation_email.delay(
+            instance.id, instance.user.email
+        )

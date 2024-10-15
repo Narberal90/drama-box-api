@@ -6,20 +6,20 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('theatre', '0002_initial'),
+        ("theatre", "0002_initial"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='reservation',
-            options={'ordering': ['-created_at']},
+            name="reservation",
+            options={"ordering": ["-created_at"]},
         ),
         migrations.AlterModelOptions(
-            name='ticket',
-            options={'ordering': ('seat',)},
+            name="ticket",
+            options={"ordering": ("seat",)},
         ),
         migrations.AlterUniqueTogether(
-            name='ticket',
-            unique_together={('performance', 'row', 'seat')},
+            name="ticket",
+            unique_together={("performance", "row", "seat")},
         ),
     ]

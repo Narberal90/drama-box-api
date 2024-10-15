@@ -8,8 +8,10 @@ CREATE_USER_URL = reverse("user:create")
 TOKEN_URL = reverse("user:token_obtain_pair")
 ME_URL = reverse("user:manage")
 
+
 def create_user(**params):
     return get_user_model().objects.create_user(**params)
+
 
 class PublicUserApiTests(TestCase):
     """Test the users API (public)"""
@@ -59,6 +61,7 @@ class PublicUserApiTests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
 
+
 class PrivateUserApiTests(TestCase):
     """Test API requests that require authentication"""
 
@@ -75,11 +78,14 @@ class PrivateUserApiTests(TestCase):
         res = self.client.get(ME_URL)
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(res.data, {
-            "id": self.user.id,
-            "email": self.user.email,
-            "is_staff": self.user.is_staff,
-        })
+        self.assertEqual(
+            res.data,
+            {
+                "id": self.user.id,
+                "email": self.user.email,
+                "is_staff": self.user.is_staff,
+            },
+        )
 
     def test_update_user_profile(self):
         """Test updating the user profile for authenticated user"""

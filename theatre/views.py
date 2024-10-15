@@ -1,6 +1,12 @@
 from django.db.models import F, Count
 from django.utils.timezone import now
 from django_filters.rest_framework.backends import DjangoFilterBackend
+from drf_spectacular.utils import (
+    extend_schema,
+    extend_schema_view,
+    OpenApiExample,
+    OpenApiResponse,
+)
 from rest_framework import viewsets, mixins, status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
@@ -14,13 +20,17 @@ from theatre.models import (
     Play,
     TheatreHall,
     Performance,
-    Reservation
+    Reservation,
 )
 from theatre.ordering import PerformancePlayOrdering
 from theatre.paginators import TheatrePaginator
 from theatre.permissions import IsAdminOrIfAnonReadOnly
-from theatre.schemas.examples import play_create_example_scheme, play_create_response_example_scheme, \
-    reservation_create_response_example_scheme, reservation_create_example_scheme
+from theatre.schemas.examples import (
+    play_create_example_scheme,
+    play_create_response_example_scheme,
+    reservation_create_response_example_scheme,
+    reservation_create_example_scheme,
+)
 from theatre.serializers import (
     ActorSerializer,
     GenreSerializer,
@@ -33,7 +43,7 @@ from theatre.serializers import (
     ReservationListSerializer,
     PerformanceCreateUpdateSerializer,
     PlayRetrieveSerializer,
-    PlayImageSerializer
+    PlayImageSerializer,
 )
 
 
@@ -53,9 +63,6 @@ class TheatreHallViewSet(viewsets.ModelViewSet):
     queryset = TheatreHall.objects.all()
     serializer_class = TheatreHallSerializer
     permission_classes = (IsAdminUser,)
-
-
-from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiExample, OpenApiResponse
 
 
 @extend_schema_view(
@@ -106,7 +113,9 @@ class PlayViewSet(viewsets.ModelViewSet):
             else:
                 queryset = future_performances
 
-        ordering = PerformancePlayOrdering.get_ordering_fields(self.request, ["title"])
+        ordering = PerformancePlayOrdering.get_ordering_fields(
+            self.request, ["title"]
+        )
         return queryset.order_by(*ordering)
 
     def get_serializer_class(self):
@@ -162,8 +171,15 @@ class PerformanceViewSet(viewsets.ModelViewSet):
         return super().get_serializer_class()
 
     def get_ordering(self):
-        fields = ["show_time", "play__title", "theatre_hall__name", "tickets_available"]
-        return PerformancePlayOrdering.get_ordering_fields(self.request, fields)
+        fields = [
+            "show_time",
+            "play__title",
+            "theatre_hall__name",
+            "tickets_available",
+        ]
+        return PerformancePlayOrdering.get_ordering_fields(
+            self.request, fields
+        )
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -173,6 +189,7 @@ class PerformanceViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(show_time__gte=now())
 
         return queryset.order_by(*ordering)
+
 
 @extend_schema_view(
     create=extend_schema(
@@ -197,12 +214,8 @@ class PerformanceViewSet(viewsets.ModelViewSet):
             ),
         ],
     ),
-    list=extend_schema(
-        responses=ReservationListSerializer
-    ),
-    retrieve=extend_schema(
-        responses=ReservationListSerializer
-    )
+    list=extend_schema(responses=ReservationListSerializer),
+    retrieve=extend_schema(responses=ReservationListSerializer),
 )
 class ReservationViewSet(
     mixins.ListModelMixin,
