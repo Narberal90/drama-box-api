@@ -17,7 +17,7 @@ class Actor(models.Model):
         return f"{self.first_name} {self.last_name}"
 
     def __str__(self) -> str:
-        return self.first_name + " " + self.last_name
+        return self.full_name
 
 
 class Genre(models.Model):
@@ -132,19 +132,5 @@ class Ticket(models.Model):
             self.row, self.seat, self.performance.theatre_hall
         )
 
-    def save(
-        self,
-        *args,
-        force_insert=False,
-        force_update=False,
-        using=None,
-        update_fields=None,
-    ):
-        self.full_clean()
-        super(Ticket, self).save(
-            *args,
-            force_insert=force_insert,
-            force_update=force_update,
-            using=using,
-            update_fields=update_fields,
-        )
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
