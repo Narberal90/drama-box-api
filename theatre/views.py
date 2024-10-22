@@ -223,8 +223,12 @@ class ReservationViewSet(
     mixins.RetrieveModelMixin,
     GenericViewSet,
 ):
-    queryset = Reservation.objects.prefetch_related(
-        "tickets__performance__play", "tickets__performance__theatre_hall"
+    queryset = (
+        Reservation.objects
+        .prefetch_related(
+            "tickets__performance__play",
+            "tickets__performance__theatre_hall"
+        )
     )
     serializer_class = ReservationSerializer
     permission_classes = (IsAuthenticated,)

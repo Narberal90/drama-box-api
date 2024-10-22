@@ -1,6 +1,6 @@
 import django_filters
 
-from .models import Play, Performance, Genre, Actor
+from theatre.models import Play, Performance, Genre, Actor
 
 
 class MultipleValuesCapitalizeFilter(

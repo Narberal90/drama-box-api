@@ -8,7 +8,12 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from theatre.models import Play, Performance, TheatreHall, Genre, Actor
+from theatre.models import (
+    Play,
+    Performance,
+    TheatreHall,
+    Genre, Actor
+)
 
 PLAY_URL = reverse("theatre:play-list")
 THEATRE_SESSION_URL = reverse("theatre:performance-list")
